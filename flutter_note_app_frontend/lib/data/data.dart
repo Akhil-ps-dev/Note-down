@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_note_app_frontend/data/get_all_notes_resp/get_all_notes_resp.dart';
 import 'package:flutter_note_app_frontend/data/note_model/note_model.dart';
 import 'package:flutter_note_app_frontend/data/url.dart';
 
@@ -34,9 +35,14 @@ class NoteDb extends ApiCall {
   }
 
   @override
-  Future<List<NoteModel>> getNotes() {
-    // TODO: implement getNotes
-    throw UnimplementedError();
+  Future<List<NoteModel>> getNotes() async {
+    final _result =
+        await dio.get<GetAllNotesResp>(url.baseUrl + url.getAllNote);
+    if (_result.data == null) {
+      return [];
+    } else {
+      return _result.data!.data;
+    }
   }
 
   @override
