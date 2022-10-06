@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_note_app_frontend/view/screen_add_note.dart';
 
 class ScreenAllNote extends StatelessWidget {
   const ScreenAllNote({super.key});
@@ -7,7 +8,7 @@ class ScreenAllNote extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('All Notes'),
+        title: const Text('All Notes'),
       ),
       body: SafeArea(
         child: GridView.count(
@@ -27,7 +28,13 @@ class ScreenAllNote extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ScreenAddNote(type: ActionType.addNote),
+            ),
+          );
+        },
         label: const Text('New'),
         icon: const Icon(Icons.add),
       ),
@@ -49,7 +56,15 @@ class NoteItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return ScreenAddNote(type: ActionType.editNote);
+            },
+          ),
+        );
+      },
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
@@ -72,14 +87,16 @@ class NoteItem extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () {},
-                    icon: Icon(Icons.delete),
+                    icon: const Icon(Icons.delete),
                     color: Colors.red,
                   ),
                 ],
               ),
               Text(
                 content,
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(
+                  fontSize: 16,
+                ),
                 maxLines: 5,
                 overflow: TextOverflow.ellipsis,
               )
