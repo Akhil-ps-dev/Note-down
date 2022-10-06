@@ -4,5 +4,5 @@ class Url {
   String createNote = '/note/create';
   String updateNote = '/note/update';
   String deleteNote = '/note/delete/{id}';
-  String getAllNote = '/note/';
+  String getAllNote = '/note/getAll';
 }
