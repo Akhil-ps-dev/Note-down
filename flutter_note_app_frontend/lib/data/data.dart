@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_note_app_frontend/data/get_all_notes_resp/get_all_notes_resp.dart';
 import 'package:flutter_note_app_frontend/data/note_model/note_model.dart';
@@ -22,10 +24,23 @@ abstract class ApiCall {
 class NoteDb extends ApiCall {
   final dio = Dio();
   final url = Url();
+  NoteDb() {
+    dio.options =
+        BaseOptions(baseUrl: url.baseUrl, responseType: ResponseType.plain);
+  }
+
   @override
   Future<NoteModel?> createNotes(NoteModel value) async {
-    final _result = await dio.post<NoteModel>(url.baseUrl + url.createNote);
-    return _result.data;
+    try {
+      final _result = await dio.post(
+        url.baseUrl + url.createNote,
+        data: value.toJson(),
+      );
+      final _resultasJson = jsonDecode(_result.data);
+      return NoteModel.fromJson(_resultasJson);
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   @override
