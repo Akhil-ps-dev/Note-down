@@ -33,7 +33,7 @@ class NoteDb extends ApiCall {
   Future<NoteModel?> createNotes(NoteModel value) async {
     try {
       final _result = await dio.post(
-        url.baseUrl + url.createNote,
+        url.createNote,
         data: value.toJson(),
       );
       final _resultasJson = jsonDecode(_result.data);

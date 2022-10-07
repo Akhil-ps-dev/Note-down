@@ -11,6 +11,7 @@ class ScreenAddNote extends StatelessWidget {
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
 
+  final _scaffoldkey = GlobalKey<ScaffoldState>();
   ScreenAddNote({super.key, this.id, required this.type});
   Widget get saveButton => TextButton.icon(
         onPressed: () {
@@ -36,6 +37,7 @@ class ScreenAddNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldkey,
       appBar: AppBar(
         centerTitle: true,
         title: Text(type.name.toUpperCase()),
@@ -83,6 +85,12 @@ class ScreenAddNote extends StatelessWidget {
       title: title,
       content: content,
     );
-    NoteDb().createNotes(_newNote);
+    final newNote = NoteDb().createNotes(_newNote);
+    if (newNote != null) {
+      print('note saved');
+      Navigator.of(_scaffoldkey.currentContext!).pop();
+    } else {
+      print('Error while saving');
+    }
   }
 }
