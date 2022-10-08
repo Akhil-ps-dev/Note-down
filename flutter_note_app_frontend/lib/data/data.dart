@@ -26,9 +26,10 @@ class NoteDb extends ApiCall {
   final url = Url();
   NoteDb() {
     dio.options =
-        BaseOptions(baseUrl: url.baseUrl, responseType: ResponseType.plain);
+        BaseOptions(baseUrl: url.baseUrl, responseType: ResponseType.json);
   }
 
+//!create note
   @override
   Future<NoteModel?> createNotes(NoteModel value) async {
     try {
@@ -37,9 +38,14 @@ class NoteDb extends ApiCall {
         data: value.toJson(),
       );
       final _resultasJson = jsonDecode(_result.data);
-      return NoteModel.fromJson(_resultasJson);
+      return NoteModel.fromJson(_resultasJson as Map<String, dynamic>);
+    } on DioError catch (e) {
+      print(e.response?.data);
+      print(e);
+      return null;
     } catch (e) {
       print(e.toString());
+      return null;
     }
   }
 
@@ -49,14 +55,17 @@ class NoteDb extends ApiCall {
     throw UnimplementedError();
   }
 
+//!get notes by list
   @override
   Future<List<NoteModel>> getNotes() async {
-    final _result =
-        await dio.get<GetAllNotesResp>(url.baseUrl + url.getAllNote);
-    if (_result.data == null) {
-      return [];
+    final _result = await dio.get(url.baseUrl + url.getAllNote);
+
+    if (_result.data != null) {
+      final _resultAsJson = jsonDecode(_result.data);
+      final getNoteResponse = GetAllNotesResp.fromJson(_resultAsJson);
+      return getNoteResponse.data;
     } else {
-      return _result.data!.data;
+      return [];
     }
   }
 

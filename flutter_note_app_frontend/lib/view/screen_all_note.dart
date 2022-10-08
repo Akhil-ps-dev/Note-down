@@ -1,11 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_note_app_frontend/data/data.dart';
+import 'package:flutter_note_app_frontend/data/note_model/note_model.dart';
 import 'package:flutter_note_app_frontend/view/screen_add_note.dart';
 
-class ScreenAllNote extends StatelessWidget {
-  const ScreenAllNote({super.key});
+class ScreenAllNote extends StatefulWidget {
+  ScreenAllNote({super.key});
+
+  @override
+  State<ScreenAllNote> createState() => _ScreenAllNoteState();
+}
+
+class _ScreenAllNoteState extends State<ScreenAllNote> {
+  //!creating temporary list outside
+  final List<NoteModel> noteList = [];
 
   @override
   Widget build(BuildContext context) {
+    //! 'addPostFrameCallback'--call only aftr the page is loaded
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final _noteList = await NoteDb().getNotes();
+      _noteList.clear();
+      setState(() {
+        noteList.addAll(_noteList);
+      });
+      print(_noteList);
+    });
+    setState(() {
+      noteList.addAll(noteList);
+    });
     return Scaffold(
       appBar: AppBar(
         title: const Text('All Notes'),
@@ -16,14 +38,18 @@ class ScreenAllNote extends StatelessWidget {
           crossAxisCount: 2,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
-          children: List.generate(
-              10,
-              (index) => NoteItem(
-                    id: index.toString(),
-                    title: 'DUMMY',
-                    content:
-                        'HAI, i love my nation, sdasdf at sdasdf · Experience · Looking for career advice? · Others named Kailas Nath · View Kailas ',
-                  )),
+          children: List.generate(noteList.length, (index) {
+            final note = noteList[index];
+            if (note.id == null) {
+              return SizedBox();
+            }
+
+            return NoteItem(
+              id: note.id!,
+              title: note.title ?? 'No Title',
+              content: note.content ?? 'No Content',
+            );
+          }),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
